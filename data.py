@@ -8,11 +8,11 @@ def build_corpus(split, make_vocab=True, data_dir="./ResumeNER"):
 
     word_lists = []
     tag_lists = []
-    with open(join(data_dir, split+".char.bmes"), 'r', encoding='utf-8') as f:
+    with open(join(data_dir, split + ".char.bmes"), 'r', encoding='utf-8') as f:
         word_list = []
         tag_list = []
         for line in f:
-            if line != '\n':
+            if line != '\r\n':
                 word, tag = line.strip('\n').split()
                 word_list.append(word)
                 tag_list.append(tag)

@@ -58,12 +58,12 @@ class BILSTM_Model(object):
             dev_word_lists, dev_tag_lists)
 
         B = self.batch_size
-        for e in range(1, self.epoches+1):
+        for e in range(1, self.epoches + 1):
             self.step = 0
             losses = 0.
             for ind in range(0, len(word_lists), B):
-                batch_sents = word_lists[ind:ind+B]
-                batch_tags = tag_lists[ind:ind+B]
+                batch_sents = word_lists[ind: ind + B]
+                batch_tags = tag_lists[ind: ind + B]
 
                 losses += self.train_step(batch_sents,
                                           batch_tags, word2id, tag2id)
@@ -110,8 +110,8 @@ class BILSTM_Model(object):
             for ind in range(0, len(dev_word_lists), self.batch_size):
                 val_step += 1
                 # 准备batch数据
-                batch_sents = dev_word_lists[ind:ind+self.batch_size]
-                batch_tags = dev_tag_lists[ind:ind+self.batch_size]
+                batch_sents = dev_word_lists[ind: ind + self.batch_size]
+                batch_tags = dev_tag_lists[ind: ind + self.batch_size]
                 tensorized_sents, lengths = tensorized(
                     batch_sents, word2id)
                 tensorized_sents = tensorized_sents.to(self.device)
@@ -184,7 +184,7 @@ class BiLSTM_CRF(nn.Module):
 
         # CRF实际上就是多学习一个转移矩阵 [out_size, out_size] 初始化为均匀分布
         self.transition = nn.Parameter(
-            torch.ones(out_size, out_size) * 1/out_size)
+            torch.ones(out_size, out_size) * 1 / out_size)
         # self.transition.data.zero_()
 
     def forward(self, sents_tensor, lengths):
@@ -226,7 +226,7 @@ class BiLSTM_CRF(nn.Module):
                 backpointer[: batch_size_t, step, :] = start_id
             else:
                 max_scores, prev_tags = torch.max(
-                    viterbi[:batch_size_t, step-1, :].unsqueeze(2) +
+                    viterbi[:batch_size_t, step - 1, :].unsqueeze(2) +
                     crf_scores[:batch_size_t, step, :, :],     # [B, T, T]
                     dim=1
                 )
@@ -237,9 +237,9 @@ class BiLSTM_CRF(nn.Module):
         backpointer = backpointer.view(B, -1)  # [B, L * T]
         tagids = []  # 存放结果
         tags_t = None
-        for step in range(L-1, 0, -1):
+        for step in range(L - 1, 0, -1):
             batch_size_t = (lengths > step).sum().item()
-            if step == L-1:
+            if step == L - 1:
                 index = torch.ones(batch_size_t).long() * (step * tagset_size)
                 index = index.to(device)
                 index += end_id

@@ -1,2 +1,5 @@
 __pycache__
 models/__pycache__
+ckpts/*
+ckpts
+ckpts/bilstm_crf.pkl
